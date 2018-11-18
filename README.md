@@ -5,7 +5,7 @@ for use with MicroPython on Pycom of ESP8266 boards. It is also compatible with
 the BMP280 which provides the same interface but temperature + pressure only.
 
 Two different variants of the library are supplied. bme20_int.py uses integer
-arithmetic. bme280_float.py uses float arithmetic for the compensation  of the
+arithmetic, bme280_float.py uses float arithmetic for the compensation  of the
 raw values. The results are (almost) the identical, but the format of the
 returned values differs.
 
@@ -24,21 +24,37 @@ bme= BME280(i2c=i2c, mode=BME280_OSAMPLE_8, address=BME280_I2CADDR)
 mode is the setting for oversampling of the humidity value, address the i2c
 address used.
 
-## Property
+## Properties
 
-### values = BME280.value
+### values = BME280.values
 
 The `values` property is a convenience function that provides a tuple of
 human-readable string values to quickly check that the sensor is working.
 In practice, the method to use is `read_compensated_data()` which returns
 a `(temperature, pressure, humidity)`-tuple
 
+### altitude = bmp.altitude
+Altitude in m. The altitude is calculated based on the value given to
+the property sealevel (see below). Obviously, this value does not have to be the
+sealevel pressure, but any pressure you may select, for instance to measure
+altitude difference in general.
+
+### bmp.sealevel = sealevel  
+### sealevel = bmp.sealevel
+Setting and getting the pressure for altitude calculation.  
+The default is 101325 Pa, but you can use your local
+QNH in Pa, or set a local pressure to determine altitude difference.  
+
+### dew_point = si7021.dew_point
+Returns the dew_point temperature (°C) calculated from the actual temperature and humidity.  
+
 ## Methods
 
 ### values = read_compensated_data(result = None)
 
-Values is an array of either integers of floats, holding the values of temperature,
-pressure and humidity. The format differs for integers and floats:
+Values is an array of either integers (bme280_int.py) of floats (bme280_float.py),
+holding the values of temperature, pressure and humidity.
+The format differs for integers and floats:
 
 #### Integer formats:
 * `temperature`:  the temperature in hundredths of a degree Celsius. For example,
@@ -76,10 +92,10 @@ Copy `bme280.py` onto the board. Then:
 # On pycom devuces that is P9 = SDA, P10 = scl
 #
 import machine
-import bme280
+import bme280_float
 
 i2c = machine.I2C()
-bme = bme280.BME280(i2c=i2c)
+bme = bme280_float.BME280(i2c=i2c)
 
 print(bme.values)
 ```

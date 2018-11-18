@@ -69,6 +69,7 @@ class BME280:
         if i2c is None:
             raise ValueError('An I2C object is required.')
         self.i2c = i2c
+        self.__sealevel = 101325
 
         # load calibration data
         dig_88_a1 = self.i2c.readfrom_mem(self.address, 0x88, 26)
@@ -188,6 +189,41 @@ class BME280:
             return result
 
         return array("i", (temp, pressure, humidity))
+
+    @property
+    def sealevel(self):
+        return self.__sealevel
+
+    @sealevel.setter
+    def sealevel(self, value):
+        if 300 < value < 1200: # just ensure some reasonable value
+            self.__sealevel = value
+
+    @property
+    def altitude(self):
+        '''
+        Altitude in m.
+        '''
+        from math import pow
+        try:
+            p = 44330 * (1.0 - pow((self.read_compensated_data()[1] / 256)
+                                   / self.__sealevel, 0.1903))
+        except:
+            p = 0.0
+        return p
+
+    @property
+    def dew_point(self):
+        """
+        Compute the dew point temperature for the current Temperature
+        and Humidity measured pair
+        """
+        from math import log
+        t, p, h = self.read_compensated_data()
+        t /= 100
+        h /= 1024
+        h = (log(h, 10) - 2) / 0.4343 + (17.62 * t) / (243.12 + t)
+        return (243.12 * h / (17.62 - h)) * 100
 
     @property
     def values(self):
