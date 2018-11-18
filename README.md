@@ -45,7 +45,7 @@ Setting and getting the pressure for altitude calculation.
 The default is 101325 Pa, but you can use your local
 QNH in Pa, or set a local pressure to determine altitude difference.  
 
-### dew_point = si7021.dew_point
+### dew_point = bmp.dew_point
 Returns the dew_point temperature (°C) calculated from the actual temperature and humidity.  
 
 ## Methods
