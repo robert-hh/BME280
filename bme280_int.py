@@ -47,6 +47,7 @@ BME280_OSAMPLE_8 = 4
 BME280_OSAMPLE_16 = 5
 
 BME280_REGISTER_CONTROL_HUM = 0xF2
+BME280_REGISTER_STATUS = 0xF3
 BME280_REGISTER_CONTROL = 0xF4
 
 
@@ -114,10 +115,9 @@ class BME280:
         self.i2c.writeto_mem(self.address, BME280_REGISTER_CONTROL,
                              self._l1_barray)
 
-        sleep_time = 1250 + 2300 * (1 << self._mode)
-        sleep_time = sleep_time + 2300 * (1 << self._mode) + 575
-        sleep_time = sleep_time + 2300 * (1 << self._mode) + 575
-        time.sleep_us(sleep_time)  # Wait the required time
+        # Wait for conversion to complete
+        while self.i2c.readfrom_mem(self.address, BME280_REGISTER_STATUS, 1)[0] & 0x08:
+            time.sleep_ms(10)
 
         # burst readout from 0xF7 to 0xFE, recommended by datasheet
         self.i2c.readfrom_mem_into(self.address, 0xF7, self._l8_barray)
