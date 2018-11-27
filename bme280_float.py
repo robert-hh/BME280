@@ -81,14 +81,11 @@ class BME280:
             self.dig_P6, self.dig_P7, self.dig_P8, self.dig_P9, \
             _, self.dig_H1 = unpack("<HhhHhhhhhhhhBB", dig_88_a1)
 
-        self.dig_H2, self.dig_H3 = unpack("<hB", dig_e1_e7)
-        e4_sign = unpack_from("<b", dig_e1_e7, 3)[0]
-        self.dig_H4 = (e4_sign << 4) | (dig_e1_e7[4] & 0xF)
-
-        e6_sign = unpack_from("<b", dig_e1_e7, 5)[0]
-        self.dig_H5 = (e6_sign << 4) | ((dig_e1_e7[4] >> 4) & 0x0F)
-
-        self.dig_H6 = unpack_from("<b", dig_e1_e7, 6)[0]
+        self.dig_H2, self.dig_H3, self.dig_H4,\
+        self.dig_H5, self.dig_H6 = unpack("<hBbhb", dig_e1_e7)
+        # unfold H4, H5, keeping care of a potential sign
+        self.dig_H4 = (self.dig_H4 * 16) + (self.dig_H5 & 0xF)
+        self.dig_H5 //= 16
 
         self.i2c.writeto_mem(self.address, BME280_REGISTER_CONTROL,
                              bytearray([0x3F]))
@@ -118,7 +115,7 @@ class BME280:
 
         # Wait for conversion to complete
         while self.i2c.readfrom_mem(self.address, BME280_REGISTER_STATUS, 1)[0] & 0x08:
-            time.sleep_ms(10)
+            time.sleep_ms(5)
 
         # burst readout from 0xF7 to 0xFE, recommended by datasheet
         self.i2c.readfrom_mem_into(self.address, 0xF7, self._l8_barray)
@@ -177,7 +174,7 @@ class BME280:
                 (self.dig_H2 / 65536.0 * (1.0 + self.dig_H6 / 67108864.0 * h *
                  (1.0 + self.dig_H3 / 67108864.0 * h))))
         humidity = h * (1.0 - self.dig_H1 * h / 524288.0)
-        humidity = max(0, min(100, humidity))
+        # humidity = max(0, min(100, humidity))
 
         if result:
             result[0] = temp
