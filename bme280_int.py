@@ -1,3 +1,10 @@
+# Updated 2018
+# This module is based on the below cited resources, which are all
+# based on the documentation as provided in the Bosch Data Sheet and
+# the sample implementation provided therein.
+#
+# Final Document: BST-BME280-DS002-15
+#
 # Authors: Paul Cunnane 2016, Peter Dahlebrg 2016
 #
 # This module borrows from the Adafruit BME280 Python library. Original
@@ -31,6 +38,11 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
+#
+# Based on the documentation as provided in the Bosch Data Sheet and
+# the sample implementation provided therein.
+# Document BST-BME280-DS002-15
+#
 
 import time
 from ustruct import unpack, unpack_from
@@ -81,7 +93,7 @@ class BME280:
             _, self.dig_H1 = unpack("<HhhHhhhhhhhhBB", dig_88_a1)
 
         self.dig_H2, self.dig_H3, self.dig_H4,\
-        self.dig_H5, self.dig_H6 = unpack("<hBbhb", dig_e1_e7)
+            self.dig_H5, self.dig_H6 = unpack("<hBbhb", dig_e1_e7)
         # unfold H4, H5, keeping care of a potential sign
         self.dig_H4 = (self.dig_H4 * 16) + (self.dig_H5 & 0xF)
         self.dig_H5 //= 16
@@ -139,8 +151,8 @@ class BME280:
                 this to read out the sensor without allocating heap memory
 
             Returns:
-                array with temperature, pressure, humidity. Will be the one from
-                the result parameter if not None
+                array with temperature, pressure, humidity. Will be the one
+                from the result parameter if not None
         """
         self.read_raw_data(self._l3_resultarray)
         raw_temp, raw_press, raw_hum = self._l3_resultarray
@@ -170,10 +182,10 @@ class BME280:
         # humidity
         h = self.t_fine - 76800
         h = (((((raw_hum << 14) - (self.dig_H4 << 20) -
-                (self.dig_H5 * h)) + 16384)
-              >> 15) * (((((((h * self.dig_H6) >> 10) *
-                            (((h * self.dig_H3) >> 11) + 32768)) >> 10) +
-                          2097152) * self.dig_H2 + 8192) >> 14))
+                (self.dig_H5 * h)) + 16384) >> 15) *
+             (((((((h * self.dig_H6) >> 10) *
+                (((h * self.dig_H3) >> 11) + 32768)) >> 10) + 2097152) *
+              self.dig_H2 + 8192) >> 14))
         h = h - (((((h >> 15) * (h >> 15)) >> 7) * self.dig_H1) >> 4)
         h = 0 if h < 0 else h
         h = 419430400 if h > 419430400 else h
@@ -193,7 +205,7 @@ class BME280:
 
     @sealevel.setter
     def sealevel(self, value):
-        if 300 < value < 1200: # just ensure some reasonable value
+        if 300 < value < 1200:  # just ensure some reasonable value
             self.__sealevel = value
 
     @property
@@ -203,8 +215,8 @@ class BME280:
         '''
         from math import pow
         try:
-            p = 44330 * (1.0 - pow((self.read_compensated_data()[1] / 256)
-                                   / self.__sealevel, 0.1903))
+            p = 44330 * (1.0 - pow((self.read_compensated_data()[1] / 256) /
+                                   self.__sealevel, 0.1903))
         except:
             p = 0.0
         return p
@@ -233,4 +245,3 @@ class BME280:
         h = h / 1024
         return ("{}C".format(t / 100), "{:.02f}hPa".format(p/100),
                 "{:.02f}%".format(h))
-

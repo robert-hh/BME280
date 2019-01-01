@@ -1,3 +1,10 @@
+# Updated 2018
+# This module is based on the below cited resources, which are all
+# based on the documentation as provided in the Bosch Data Sheet and
+# the sample implementation provided therein.
+#
+# Final Document: BST-BME280-DS002-15
+#
 # Authors: Paul Cunnane 2016, Peter Dahlebrg 2016
 #
 # This module borrows from the Adafruit BME280 Python library. Original
@@ -31,6 +38,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
+#
 
 import time
 from ustruct import unpack, unpack_from
@@ -82,7 +90,7 @@ class BME280:
             _, self.dig_H1 = unpack("<HhhHhhhhhhhhBB", dig_88_a1)
 
         self.dig_H2, self.dig_H3, self.dig_H4,\
-        self.dig_H5, self.dig_H6 = unpack("<hBbhb", dig_e1_e7)
+            self.dig_H5, self.dig_H6 = unpack("<hBbhb", dig_e1_e7)
         # unfold H4, H5, keeping care of a potential sign
         self.dig_H4 = (self.dig_H4 * 16) + (self.dig_H5 & 0xF)
         self.dig_H5 //= 16
@@ -140,8 +148,8 @@ class BME280:
                 this to read out the sensor without allocating heap memory
 
             Returns:
-                array with temperature, pressure, humidity. Will be the one from
-                the result parameter if not None
+                array with temperature, pressure, humidity. Will be the one
+                from the result parameter if not None
         """
         self.read_raw_data(self._l3_resultarray)
         raw_temp, raw_press, raw_hum = self._l3_resultarray
@@ -160,7 +168,7 @@ class BME280:
         var1 = (self.dig_P3 * var1 * var1 / 524288.0 + self.dig_P2 * var1) / 524288.0
         var1 = (1.0 + var1 / 32768.0) * self.dig_P1
         if (var1 == 0.0):
-            pressure = 30000 # avoid exception caused by division by zero
+            pressure = 30000  # avoid exception caused by division by zero
         else:
             p = ((1048576.0 - raw_press) - (var2 / 4096.0)) * 6250.0 / var1
             var1 = self.dig_P9 * p * p / 2147483648.0
@@ -171,8 +179,8 @@ class BME280:
         # humidity
         h = (self.t_fine - 76800.0)
         h = ((raw_hum - (self.dig_H4 * 64.0 + self.dig_H5 / 16384.0 * h)) *
-                (self.dig_H2 / 65536.0 * (1.0 + self.dig_H6 / 67108864.0 * h *
-                 (1.0 + self.dig_H3 / 67108864.0 * h))))
+             (self.dig_H2 / 65536.0 * (1.0 + self.dig_H6 / 67108864.0 * h *
+                                       (1.0 + self.dig_H3 / 67108864.0 * h))))
         humidity = h * (1.0 - self.dig_H1 * h / 524288.0)
         # humidity = max(0, min(100, humidity))
 
@@ -190,7 +198,7 @@ class BME280:
 
     @sealevel.setter
     def sealevel(self, value):
-        if 30000 < value < 120000: # just ensure some reasonable value
+        if 30000 < value < 120000:  # just ensure some reasonable value
             self.__sealevel = value
 
     @property
@@ -200,8 +208,8 @@ class BME280:
         '''
         from math import pow
         try:
-            p = 44330 * (1.0 - pow(self.read_compensated_data()[1]
-                                   / self.__sealevel, 0.1903))
+            p = 44330 * (1.0 - pow(self.read_compensated_data()[1] /
+                                   self.__sealevel, 0.1903))
         except:
             p = 0.0
         return p
@@ -225,4 +233,3 @@ class BME280:
 
         return ("{:.2f}C".format(t), "{:.2f}hPa".format(p/100),
                 "{:.2f}%".format(h))
-
