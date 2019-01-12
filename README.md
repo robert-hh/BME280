@@ -84,7 +84,7 @@ method is used internally.
 
 ### Example
 
-Copy `bme280.py` onto the board. Then:
+Copy `bme280_float.py` onto the board. Then:
 
 ``` python
 #
