@@ -62,6 +62,10 @@ BME280_REGISTER_CONTROL_HUM = 0xF2
 BME280_REGISTER_STATUS = 0xF3
 BME280_REGISTER_CONTROL = 0xF4
 
+MODE_SLEEP = const(0)
+MODE_FORCED = const(1)
+MODE_NORMAL = const(3)
+
 
 class BME280:
 
@@ -98,14 +102,16 @@ class BME280:
         self.dig_H4 = (self.dig_H4 * 16) + (self.dig_H5 & 0xF)
         self.dig_H5 //= 16
 
-        self.i2c.writeto_mem(self.address, BME280_REGISTER_CONTROL,
-                             bytearray([0x3F]))
         self.t_fine = 0
 
         # temporary data holders which stay allocated
         self._l1_barray = bytearray(1)
         self._l8_barray = bytearray(8)
         self._l3_resultarray = array("i", [0, 0, 0])
+
+        self._l1_barray[0] = self._mode << 5 | self._mode << 2 | MODE_SLEEP
+        self.i2c.writeto_mem(self.address, BME280_REGISTER_CONTROL,
+                             bytearray([0x3c | MODE_SLEEP]))
 
     def read_raw_data(self, result):
         """ Reads the raw (uncompensated) data from the sensor.
@@ -120,7 +126,7 @@ class BME280:
         self._l1_barray[0] = self._mode
         self.i2c.writeto_mem(self.address, BME280_REGISTER_CONTROL_HUM,
                              self._l1_barray)
-        self._l1_barray[0] = self._mode << 5 | self._mode << 2 | 1
+        self._l1_barray[0] = self._mode << 5 | self._mode << 2 | MODE_FORCED
         self.i2c.writeto_mem(self.address, BME280_REGISTER_CONTROL,
                              self._l1_barray)
 

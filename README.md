@@ -92,10 +92,10 @@ Copy `bme280_float.py` onto the board. Then:
 # On pycom devuces that is P9 = SDA, P10 = scl
 #
 import machine
-import bme280_float
+import bme280_float as bme280
 
 i2c = machine.I2C()
-bme = bme280_float.BME280(i2c=i2c)
+bme = bme280.BME280(i2c=i2c)
 
 print(bme.values)
 ```
