@@ -74,8 +74,8 @@ class BME280:
                         BME280_OSAMPLE_8, BME280_OSAMPLE_16]:
             raise ValueError(
                 'Unexpected mode value {0}. Set mode to one of '
-                'BME280_ULTRALOWPOWER, BME280_STANDARD, BME280_HIGHRES, or '
-                'BME280_ULTRAHIGHRES'.format(mode))
+                'BME280_OSAMPLE_1, BME280_OSAMPLE_2, BME280_OSAMPLE_4,'
+                'BME280_OSAMPLE_8, BME280_OSAMPLE_16'.format(mode))
         self._mode = mode
         self.address = address
         if i2c is None:
