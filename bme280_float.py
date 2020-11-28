@@ -62,6 +62,8 @@ MODE_SLEEP = const(0)
 MODE_FORCED = const(1)
 MODE_NORMAL = const(3)
 
+BME280_TIMEOUT = const(100)  # about 1 second timeout
+
 class BME280:
 
     def __init__(self,
@@ -126,8 +128,13 @@ class BME280:
                              self._l1_barray)
 
         # Wait for conversion to complete
-        while self.i2c.readfrom_mem(self.address, BME280_REGISTER_STATUS, 1)[0] & 0x08:
-            time.sleep_ms(5)
+        for _ in range(BME280_TIMEOUT):
+            if self.i2c.readfrom_mem(self.address, BME280_REGISTER_STATUS, 1)[0] & 0x08:
+                time.sleep_ms(10)  # still busy
+            else:
+                break  # Sensor ready
+        else:
+            raise RuntimeError("Sensor BME280 not ready")
 
         # burst readout from 0xF7 to 0xFE, recommended by datasheet
         self.i2c.readfrom_mem_into(self.address, 0xF7, self._l8_barray)
