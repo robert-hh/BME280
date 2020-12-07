@@ -1,4 +1,4 @@
-# Updated 2018
+# Updated 2018 and 2020
 # This module is based on the below cited resources, which are all
 # based on the documentation as provided in the Bosch Data Sheet and
 # the sample implementation provided therein.
