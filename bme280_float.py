@@ -244,3 +244,9 @@ class BME280:
 
         return ("{:.2f}C".format(t), "{:.2f}hPa".format(p/100),
                 "{:.2f}%".format(h))
+    
+    @property    
+    def csv(self):
+        """ human readable values """
+        t, p, h = self.read_compensated_data()
+        return '{0:.2f},{1:.2f},{2:.2f}'.format(t,p/100,h)
