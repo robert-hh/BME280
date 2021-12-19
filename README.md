@@ -2,7 +2,7 @@
 
 This is a driver for the Bosch BME280 temperature/pressure/humidity sensor,
 for use with MicroPython on Pycom of ESP8266 boards. It is also compatible with
-the BMP280 which provides the same interface but temperature + pressure only.
+the BMP180 which provides the same interface but temperature + pressure only.
 
 Two different variants of the library are supplied. bme20_int.py uses integer
 arithmetic, bme280_float.py uses float arithmetic for the compensation  of the
@@ -19,7 +19,7 @@ for details.
 
 ## Class
 
-bme= BME280(i2c=i2c, mode=BME280_OSAMPLE_8, address=BME280_I2CADDR)
+bme = BME280(i2c=i2c, mode=BME280_OSAMPLE_8, address=BME280_I2CADDR)
 
 mode is the setting for oversampling of the humidity value, address the i2c
 address used.
@@ -33,20 +33,20 @@ human-readable string values to quickly check that the sensor is working.
 In practice, the method to use is `read_compensated_data()` which returns
 a `(temperature, pressure, humidity)`-tuple
 
-### altitude = bmp.altitude
+### altitude = bme.altitude
 Altitude in m. The altitude is calculated based on the value given to
 the property sealevel (see below). Obviously, this value does not have to be the
 sealevel pressure, but any pressure you may select, for instance to measure
 altitude difference in general.
 
-### bmp.sealevel = sealevel  
-### sealevel = bmp.sealevel
-Setting and getting the pressure for altitude calculation.  
+### bme.sealevel = sealevel
+### sealevel = bme.sealevel
+Setting and getting the pressure for altitude calculation.
 The default is 101325 Pa, but you can use your local
-QNH in Pa, or set a local pressure to determine altitude difference.  
+QNH in Pa, or set a local pressure to determine altitude difference.
 
-### dew_point = bmp.dew_point
-Returns the dew_point temperature (°C) calculated from the actual temperature and humidity.  
+### dew_point = bme.dew_point
+Returns the dew_point temperature (°C) calculated from the actual temperature and humidity.
 
 ## Methods
 
