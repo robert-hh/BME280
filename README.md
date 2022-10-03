@@ -14,7 +14,7 @@ returned values differs.
 The Bosch BME280 Environmental Sensor is a combined temperature, pressure and
 humidity sensor. It can communicate via I2C or SPI; this driver uses I2C.
 
-See the datasheet at https://ae-bst.resource.bosch.com/media/_tech/media/datasheets/BST-BME280_DS002.pdf
+See the datasheet at https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme280-ds002.pdf
 for details.
 
 ## Class
