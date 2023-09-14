@@ -2,7 +2,7 @@
 
 This is a driver for the Bosch BME280 temperature/pressure/humidity sensor,
 for use with MicroPython on Pycom of ESP8266 boards. It is also compatible with
-the BMP180 which provides the same interface but temperature + pressure only.
+the BMP280 which provides the same interface but temperature + pressure only.
 
 Two different variants of the library are supplied. bme20_int.py uses integer
 arithmetic, bme280_float.py uses float arithmetic for the compensation  of the
