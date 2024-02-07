@@ -207,6 +207,10 @@ class BME280:
         h = 0 if h < 0 else h
         h = 419430400 if h > 419430400 else h
         humidity = h >> 12
+        if humidity < 0:
+            humidity = 0
+        if humidity > 100 * 1024:
+            humidity = 100 * 1024
 
         if result:
             result[0] = temp
