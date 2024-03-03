@@ -226,7 +226,7 @@ class BME280:
 
     @sealevel.setter
     def sealevel(self, value):
-        if 300 < value < 1200:  # just ensure some reasonable value
+        if 30000 < value < 120000:  # just ensure some reasonable value
             self.__sealevel = value
 
     @property
