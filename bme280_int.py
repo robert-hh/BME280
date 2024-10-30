@@ -117,7 +117,7 @@ class BME280:
 
         self._l1_barray[0] = self._mode_temp << 5 | self._mode_press << 2 | MODE_SLEEP
         self.i2c.writeto_mem(self.address, BME280_REGISTER_CONTROL,
-                             bytearray([0x3c | MODE_SLEEP]))
+                             self._l1_barray)
 
     def read_raw_data(self, result):
         """ Reads the raw (uncompensated) data from the sensor.
