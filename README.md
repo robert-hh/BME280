@@ -85,6 +85,8 @@ method is used internally.
 
 ### Example
 
+Note: This code was tested on a NodeMCU (ESP8266) running MicroPython v1.25.0 from 2025-04-15
+
 Copy `bme280_float.py` onto the board. Then:
 
 ``` python
@@ -93,10 +95,10 @@ Copy `bme280_float.py` onto the board. Then:
 # GPIO8 and 9. At the RPi Pico, these are the board pins 11 and 12
 # Please check that pull-up resistors are in place at sda and scl.
 #
-import machine, Pin
+import machine
 import bme280_float as bme280
 
-i2c = machine.I2C(0, sda=machine.Pin(8), scl=machine.Pin(9))
+i2c = machine.I2C(sda=machine.Pin(8), scl=machine.Pin(9))
 bme = bme280.BME280(i2c=i2c)
 
 print(bme.values)
