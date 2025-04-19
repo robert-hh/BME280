@@ -1,10 +1,10 @@
 # BME280 Micropython driver for the BME280 sensor
 
 This is a driver for the Bosch BME280 temperature/pressure/humidity sensor,
-for use with MicroPython on Pycom of ESP8266 boards. It is also compatible with
+for use with MicroPython boards. It is also compatible with
 the BMP280 which provides the same interface but temperature + pressure only.
 
-Two different variants of the library are supplied. bme20_int.py uses integer
+Two different variants of the library are supplied. bme280_int.py uses integer
 arithmetic, bme280_float.py uses float arithmetic for the compensation  of the
 raw values. The results are (almost) the identical, but the format of the
 returned values differs.
@@ -87,7 +87,7 @@ method is used internally.
 
 Copy `bme280_float.py` onto the board. Then:
 
-``` python
+```python
 #
 # this script for the rp2040 port assumes the I2C connections at
 # GPIO8 and 9. At the RPi Pico, these are the board pins 11 and 12
