@@ -1,0 +1,8 @@
+{
+  "urls": [
+    ["bme280_float.py", "github:robert-hh/BME280/bme280_float.py"],
+    ["bme280_int.py", "github:robert-hh/BME280/bme280_int.py"]
+  ],
+  "version": "1.0.0",
+  "deps": []
+}
