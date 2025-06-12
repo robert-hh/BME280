@@ -136,6 +136,7 @@ class BME280:
                              self._l1_barray)
 
         # Wait for conversion to complete
+        time.sleep_ms(5)  # To give it time to register the request, otherwise sometimes it returns the previous values
         for _ in range(BME280_TIMEOUT):
             if self.i2c.readfrom_mem(self.address, BME280_REGISTER_STATUS, 1)[0] & 0x08:
                 time.sleep_ms(10)  # still busy
