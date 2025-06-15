@@ -84,8 +84,8 @@ class BME280:
                             BME280_OSAMPLE_8, BME280_OSAMPLE_16]:
                 raise ValueError(
                     'Unexpected mode value {0}. Set mode to one of '
-                    'BME280_ULTRALOWPOWER, BME280_STANDARD, BME280_HIGHRES, or '
-                    'BME280_ULTRAHIGHRES'.format(mode))
+                    'BME280_OSAMPLE_1, BME280_OSAMPLE_2, BME280_OSAMPLE_4, '
+                    'BME280_OSAMPLE_8 or BME280_OSAMPLE_16'.format(mode))
 
         self.address = address
         if i2c is None:
@@ -135,6 +135,11 @@ class BME280:
         self.i2c.writeto_mem(self.address, BME280_REGISTER_CONTROL,
                              self._l1_barray)
 
+        # wait up to about 5 ms for the conversion to start
+        for _ in range(5):
+            if self.i2c.readfrom_mem(self.address, BME280_REGISTER_STATUS, 1)[0] & 0x08:
+                break;  # The conversion is started.
+            time.sleep_ms(1)  # still not busy
         # Wait for conversion to complete
         for _ in range(BME280_TIMEOUT):
             if self.i2c.readfrom_mem(self.address, BME280_REGISTER_STATUS, 1)[0] & 0x08:
